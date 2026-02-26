@@ -1,8 +1,8 @@
-
 import Foundation
+import Combine
 
-class StudentRepositoryStub: StudentRepository {
-    private var students: [Student] = []
+class StudentRepositoryStub: ObservableObject, StudentRepository {
+    @Published var students: [Student] = []
 
     init() {
         let alice = Student(id: "S001", name: "Alice")

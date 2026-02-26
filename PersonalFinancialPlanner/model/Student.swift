@@ -1,16 +1,10 @@
-//
-//  Student.swift
-//  PersonalFinancialPlanner
-//
-//  Created by Harneet Arri on 2026-02-26.
-//
-
 import Foundation
+import Combine
 
-class Student {
+class Student: ObservableObject {
     var id: String
     var name: String
-    var transactions: [Transaction] = []
+    @Published var transactions: [Transaction] = []
 
     init(id: String, name: String) {
         self.id = id
