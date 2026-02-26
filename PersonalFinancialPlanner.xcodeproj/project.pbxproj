@@ -6,6 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5AC2E0C02F50FF68008BE998 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AC2E0B72F50FF68008BE998 /* Account.swift */; };
+		5AC2E0C12F50FF68008BE998 /* Budget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AC2E0B92F50FF68008BE998 /* Budget.swift */; };
+		5AC2E0C22F50FF68008BE998 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AC2E0BA2F50FF68008BE998 /* ContentView.swift */; };
+		5AC2E0C32F50FF68008BE998 /* PersonalFinancialPlannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AC2E0BB2F50FF68008BE998 /* PersonalFinancialPlannerApp.swift */; };
+		5AC2E0C42F50FF68008BE998 /* Student.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AC2E0BC2F50FF68008BE998 /* Student.swift */; };
+		5AC2E0C52F50FF68008BE998 /* StudentRepositoryStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AC2E0BD2F50FF68008BE998 /* StudentRepositoryStub.swift */; };
+		5AC2E0C62F50FF68008BE998 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AC2E0BE2F50FF68008BE998 /* Transaction.swift */; };
+		5AC2E0C72F50FF68008BE998 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5AC2E0B82F50FF68008BE998 /* Assets.xcassets */; };
+		5AC2E0CD2F510060008BE998 /* FinancialService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AC2E0CC2F51005A008BE998 /* FinancialService.swift */; };
+		5AC2E0CF2F510073008BE998 /* StudentRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AC2E0CE2F510071008BE998 /* StudentRepository.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		5A1AA5812F50DF60009C379A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,14 +40,19 @@
 		5A1AA5732F50DF5C009C379A /* PersonalFinancialPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PersonalFinancialPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A1AA5802F50DF60009C379A /* PersonalFinancialPlannerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PersonalFinancialPlannerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A1AA58A2F50DF60009C379A /* PersonalFinancialPlannerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PersonalFinancialPlannerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5AC2E0B72F50FF68008BE998 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		5AC2E0B82F50FF68008BE998 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5AC2E0B92F50FF68008BE998 /* Budget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Budget.swift; sourceTree = "<group>"; };
+		5AC2E0BA2F50FF68008BE998 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		5AC2E0BB2F50FF68008BE998 /* PersonalFinancialPlannerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalFinancialPlannerApp.swift; sourceTree = "<group>"; };
+		5AC2E0BC2F50FF68008BE998 /* Student.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Student.swift; sourceTree = "<group>"; };
+		5AC2E0BD2F50FF68008BE998 /* StudentRepositoryStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentRepositoryStub.swift; sourceTree = "<group>"; };
+		5AC2E0BE2F50FF68008BE998 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		5AC2E0CC2F51005A008BE998 /* FinancialService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialService.swift; sourceTree = "<group>"; };
+		5AC2E0CE2F510071008BE998 /* StudentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentRepository.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		5A1AA5752F50DF5C009C379A /* PersonalFinancialPlanner */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = PersonalFinancialPlanner;
-			sourceTree = "<group>";
-		};
 		5A1AA5832F50DF60009C379A /* PersonalFinancialPlannerTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = PersonalFinancialPlannerTests;
@@ -75,7 +93,7 @@
 		5A1AA56A2F50DF5C009C379A = {
 			isa = PBXGroup;
 			children = (
-				5A1AA5752F50DF5C009C379A /* PersonalFinancialPlanner */,
+				5AC2E0BF2F50FF68008BE998 /* PersonalFinancialPlanner */,
 				5A1AA5832F50DF60009C379A /* PersonalFinancialPlannerTests */,
 				5A1AA58D2F50DF60009C379A /* PersonalFinancialPlannerUITests */,
 				5A1AA5742F50DF5C009C379A /* Products */,
@@ -92,6 +110,55 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		5AC2E0BF2F50FF68008BE998 /* PersonalFinancialPlanner */ = {
+			isa = PBXGroup;
+			children = (
+				5AC2E0CB2F50FFEC008BE998 /* ui */,
+				5AC2E0CA2F50FFCD008BE998 /* service */,
+				5AC2E0C92F50FFC0008BE998 /* repository */,
+				5AC2E0C82F50FFB1008BE998 /* model */,
+				5AC2E0B82F50FF68008BE998 /* Assets.xcassets */,
+				5AC2E0BB2F50FF68008BE998 /* PersonalFinancialPlannerApp.swift */,
+			);
+			path = PersonalFinancialPlanner;
+			sourceTree = "<group>";
+		};
+		5AC2E0C82F50FFB1008BE998 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				5AC2E0BC2F50FF68008BE998 /* Student.swift */,
+				5AC2E0B72F50FF68008BE998 /* Account.swift */,
+				5AC2E0B92F50FF68008BE998 /* Budget.swift */,
+				5AC2E0BE2F50FF68008BE998 /* Transaction.swift */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
+		5AC2E0C92F50FFC0008BE998 /* repository */ = {
+			isa = PBXGroup;
+			children = (
+				5AC2E0CE2F510071008BE998 /* StudentRepository.swift */,
+				5AC2E0BD2F50FF68008BE998 /* StudentRepositoryStub.swift */,
+			);
+			path = repository;
+			sourceTree = "<group>";
+		};
+		5AC2E0CA2F50FFCD008BE998 /* service */ = {
+			isa = PBXGroup;
+			children = (
+				5AC2E0CC2F51005A008BE998 /* FinancialService.swift */,
+			);
+			path = service;
+			sourceTree = "<group>";
+		};
+		5AC2E0CB2F50FFEC008BE998 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				5AC2E0BA2F50FF68008BE998 /* ContentView.swift */,
+			);
+			path = ui;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -106,9 +173,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				5A1AA5752F50DF5C009C379A /* PersonalFinancialPlanner */,
 			);
 			name = PersonalFinancialPlanner;
 			packageProductDependencies = (
@@ -212,6 +276,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5AC2E0C72F50FF68008BE998 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +301,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5AC2E0C02F50FF68008BE998 /* Account.swift in Sources */,
+				5AC2E0C12F50FF68008BE998 /* Budget.swift in Sources */,
+				5AC2E0CF2F510073008BE998 /* StudentRepository.swift in Sources */,
+				5AC2E0CD2F510060008BE998 /* FinancialService.swift in Sources */,
+				5AC2E0C22F50FF68008BE998 /* ContentView.swift in Sources */,
+				5AC2E0C32F50FF68008BE998 /* PersonalFinancialPlannerApp.swift in Sources */,
+				5AC2E0C42F50FF68008BE998 /* Student.swift in Sources */,
+				5AC2E0C52F50FF68008BE998 /* StudentRepositoryStub.swift in Sources */,
+				5AC2E0C62F50FF68008BE998 /* Transaction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
