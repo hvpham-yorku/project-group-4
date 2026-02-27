@@ -1,34 +1,45 @@
+
 //
 //  ContentView.swift
 //  PersonalFinancialPlanner
 //
 //  Created by Harneet Arri on 2026-02-26.
-//
+// edited by gurshaan gill
+
 import SwiftUI
 
 // MARK: - Recurrence Enum
+// Enum to define how often a transaction repeats
 enum Recurrence: String, CaseIterable, Identifiable {
     case none, weekly, biweekly, monthly
+    
+    // Conformance to Identifiable protocol
     var id: String { self.rawValue }
 }
 
+// MARK: - Main Content View
 struct ContentView: View {
+    // StateObject manages the lifecycle of the repository for this view
     @StateObject private var repository = StudentRepositoryStub()
+    
+    // Service handles business logic, like adding income/expense
     private var service: FinancialService
     
-    // Input fields
-    @State private var amountText = ""
-    @State private var categoryText = ""
-    @State private var recurrenceSelection: Recurrence = .none
-
+    // Input fields for adding a transaction
+    @State private var amountText = ""          // Text input for amount
+    @State private var categoryText = ""        // Text input for category/title
+    @State private var recurrenceSelection: Recurrence = .none  // Picker selection
+    
+    // Custom initializer to inject repository into service
     init() {
         let repo = StudentRepositoryStub()
         self._repository = StateObject(wrappedValue: repo)
         self.service = FinancialService(repository: repo)
     }
 
+    // MARK: - Body
     var body: some View {
-        TabView {
+        TabView {  // Tab bar navigation
             mainHomeView
                 .tabItem { Label("Home", systemImage: "house.fill") }
 
@@ -43,16 +54,18 @@ struct ContentView: View {
     // MARK: - Home View
     private var mainHomeView: some View {
         ZStack {
-            Color.blue.opacity(0.55).ignoresSafeArea()
-            ScrollView {
+            Color.blue.opacity(0.55).ignoresSafeArea()  // Background color
+            ScrollView {  // Scrollable content
                 VStack(spacing: 25) {
-                    Text("UniWallet")
+                    Text("UniWallet")  // App title
                         .font(.system(size: 36, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                         .padding(.top)
 
+                    // Display student financial data if available
                     if let student = repository.findStudent(byId: "S001") {
                         HStack(spacing: 15) {
+                            // Cards showing Income, Expenses, Balance
                             cuteCard(title: "Income", amount: student.totalIncome(), color: .green, icon: "arrow.up.circle.fill")
                             cuteCard(title: "Expenses", amount: student.totalExpenses(), color: .red, icon: "arrow.down.circle.fill")
                             cuteCard(title: "Balance", amount: student.balance(), color: .blue, icon: "banknote.fill")
@@ -60,6 +73,7 @@ struct ContentView: View {
                         .padding(.top)
                         .padding(.horizontal)
 
+                        // List of all transactions
                         transactionListView(student: student)
                     }
                     Spacer()
@@ -72,19 +86,22 @@ struct ContentView: View {
     // MARK: - Add Transaction View
     private var addTransactionView: some View {
         ZStack {
-            Color.gray.opacity(0.2).ignoresSafeArea()
+            Color.gray.opacity(0.2).ignoresSafeArea() // Background color
             VStack(spacing: 20) {
+                // Amount input field
                 TextField("Amount", text: $amountText)
                     .keyboardType(.decimalPad)
                     .padding()
                     .background(Color.white.opacity(0.8))
                     .cornerRadius(20)
 
+                // Category / Title input field
                 TextField("Category / Title", text: $categoryText)
                     .padding()
                     .background(Color.white.opacity(0.8))
                     .cornerRadius(20)
 
+                // Recurrence picker
                 Picker("Repeat", selection: $recurrenceSelection) {
                     ForEach(Recurrence.allCases) { rec in
                         Text(rec.rawValue.capitalized).tag(rec)
@@ -92,11 +109,13 @@ struct ContentView: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
 
+                // Buttons for adding income or expense
                 HStack(spacing: 15) {
+                    // Add Income
                     Button(action: {
                         if let amount = Double(amountText) {
                             service.addIncome(studentId: "S001", amount: amount, category: categoryText, recurrence: recurrenceSelection)
-                            clearInputs()
+                            clearInputs()  // Reset fields after adding
                         }
                     }) {
                         Label("Income", systemImage: "plus.circle.fill")
@@ -107,10 +126,11 @@ struct ContentView: View {
                             .cornerRadius(25)
                     }
 
+                    // Add Expense
                     Button(action: {
                         if let amount = Double(amountText) {
                             service.addExpense(studentId: "S001", amount: amount, category: categoryText, recurrence: recurrenceSelection)
-                            clearInputs()
+                            clearInputs()  // Reset fields after adding
                         }
                     }) {
                         Label("Expense", systemImage: "minus.circle.fill")
@@ -129,8 +149,9 @@ struct ContentView: View {
     // MARK: - Budget / Projection View
     private var budgetView: some View {
         ZStack {
-            Color.orange.opacity(0.2).ignoresSafeArea()
+            Color.orange.opacity(0.2).ignoresSafeArea() // Background color
             VStack(spacing: 20) {
+                // Calculate monthly totals if student exists
                 if let student = repository.findStudent(byId: "S001") {
                     let income = student.totalIncomeThisMonth()
                     let expenses = student.totalExpensesThisMonth()
@@ -168,6 +189,7 @@ struct ContentView: View {
                 .foregroundColor(.white)
                 .padding(.top, 20)
 
+            // Loop through transactions and display each
             ForEach(student.transactions.indices, id: \.self) { i in
                 let t = student.transactions[i]
                 HStack {
@@ -190,6 +212,7 @@ struct ContentView: View {
     }
 
     // MARK: - Helpers
+    // Creates a small card for displaying income, expenses, or balance
     private func cuteCard(title: String, amount: Double, color: Color, icon: String) -> some View {
         VStack(spacing: 8) {
             Image(systemName: icon)
@@ -207,6 +230,7 @@ struct ContentView: View {
         .shadow(color: .gray.opacity(0.3), radius: 4, x: 0, y: 3)
     }
 
+    // Clears input fields after adding a transaction
     private func clearInputs() {
         amountText = ""
         categoryText = ""
@@ -216,6 +240,7 @@ struct ContentView: View {
 
 // MARK: - Extensions for monthly totals
 extension Student {
+    // Calculates total income for current month
     func totalIncomeThisMonth() -> Double {
         let calendar = Calendar.current
         let now = Date()
@@ -224,6 +249,7 @@ extension Student {
         }.reduce(0) { $0 + $1.amount }
     }
 
+    // Calculates total expenses for current month
     func totalExpensesThisMonth() -> Double {
         let calendar = Calendar.current
         let now = Date()
@@ -232,3 +258,5 @@ extension Student {
         }.reduce(0) { $0 + $1.amount }
     }
 }
+
+
