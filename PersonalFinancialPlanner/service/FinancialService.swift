@@ -1,4 +1,13 @@
+//
+//  FinancialService.swift
+//  PersonalFinancialPlanner
+//
+//  Created by Harneet Arri on 2026-02-26.
+//
 import Foundation
+
+// Recurrence enum to match ContentView
+
 
 class FinancialService {
     private let repository: StudentRepository
@@ -7,52 +16,83 @@ class FinancialService {
         self.repository = repository
     }
 
-    func addIncome(studentId: String, amount: Double, category: String) {
-        // Attempt to find the student; exit early if not found
+    // MARK: - Add Income
+    func addIncome(studentId: String, amount: Double, category: String, recurrence: Recurrence = .none) {
         guard let student = repository.findStudent(byId: studentId) else { return }
 
-        // Use a dictionary-style initializer for clarity (same effect)
-        let transactionDetails: [String: Any] = [
-            "id": UUID().uuidString,
-            "amount": amount,
-            "date": Date(),
-            "type": "Income",
-            "category": category
-        ]
-
-        // Create the transaction using the dictionary values
-        let transaction = Transaction(
-            id: transactionDetails["id"] as! String,
-            amount: transactionDetails["amount"] as! Double,
-            date: transactionDetails["date"] as! Date,
-            type: transactionDetails["type"] as! String,
-            category: transactionDetails["category"] as! String
-        )
-
-        // Append transaction and save student
-        student.addTransaction(transaction)
-        repository.saveStudent(student)
-    }
-
-    func addExpense(studentId: String, amount: Double, category: String) {
-        // Try to find the student; exit early if not found
-        guard let student = repository.findStudent(byId: studentId) else { return }
-
-        // Capture the current date once
-        let currentDate = Date()
-
-        // Build the transaction
+        // Create the main transaction
         let transaction = Transaction(
             id: UUID().uuidString,
             amount: amount,
-            date: currentDate,
+            date: Date(),
+            type: "Income",
+            category: category
+        )
+        student.addTransaction(transaction)
+        repository.saveStudent(student)
+
+        // Handle recurring transactions
+        handleRecurrence(for: student, amount: amount, category: category, type: "Income", recurrence: recurrence)
+    }
+
+    // MARK: - Add Expense
+    func addExpense(studentId: String, amount: Double, category: String, recurrence: Recurrence = .none) {
+        guard let student = repository.findStudent(byId: studentId) else { return }
+
+        let transaction = Transaction(
+            id: UUID().uuidString,
+            amount: amount,
+            date: Date(),
             type: "Expense",
             category: category
         )
-
-        // Append the transaction and persist
         student.addTransaction(transaction)
+        repository.saveStudent(student)
+
+        handleRecurrence(for: student, amount: amount, category: category, type: "Expense", recurrence: recurrence)
+    }
+
+    // MARK: - Handle Recurrence (future transactions)
+    private func handleRecurrence(for student: Student, amount: Double, category: String, type: String, recurrence: Recurrence) {
+        let calendar = Calendar.current
+        var nextDate = Date()
+
+        // Number of future occurrences to create (for demo, e.g., 12 months max)
+        let occurrences: Int
+        switch recurrence {
+        case .none:
+            return // nothing more to do
+        case .weekly:
+            occurrences = 12
+        case .biweekly:
+            occurrences = 12
+        case .monthly:
+            occurrences = 12
+        }
+
+        // Add future recurring transactions
+        for _ in 1...occurrences {
+            switch recurrence {
+            case .weekly:
+                nextDate = calendar.date(byAdding: .weekOfYear, value: 1, to: nextDate)!
+            case .biweekly:
+                nextDate = calendar.date(byAdding: .weekOfYear, value: 2, to: nextDate)!
+            case .monthly:
+                nextDate = calendar.date(byAdding: .month, value: 1, to: nextDate)!
+            default:
+                break
+            }
+
+            let futureTransaction = Transaction(
+                id: UUID().uuidString,
+                amount: amount,
+                date: nextDate,
+                type: type,
+                category: category
+            )
+            student.addTransaction(futureTransaction)
+        }
+
         repository.saveStudent(student)
     }
 }
-//testing push
