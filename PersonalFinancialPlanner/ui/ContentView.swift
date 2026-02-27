@@ -1,12 +1,23 @@
+//
+//  ContentView.swift
+//  PersonalFinancialPlanner
+//
+//  Created by Harneet Arri on 2026-02-26.
+//
 import SwiftUI
 
 struct ContentView: View {
+    // Repository to store student data and transactions
     @StateObject private var repository = StudentRepositoryStub()
+    
+    // Service to handle adding income/expense logic
     private var service: FinancialService
 
+    // Input fields for user to type amount and category
     @State private var amountText = ""
     @State private var categoryText = ""
 
+    // Initialize repository and service
     init() {
         let repo = StudentRepositoryStub()
         self._repository = StateObject(wrappedValue: repo)
@@ -15,21 +26,22 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            // Light blue background
-            Color.blue.opacity(0.45)
+            // Background color
+            Color.blue.opacity(0.55)
                 .ignoresSafeArea()
 
             ScrollView {
                 VStack(spacing: 25) {
 
-                    // MARK: - App Header
+                    // App title
                     Text("UniWallet")
                         .font(.system(size: 36, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                         .padding(.top)
 
-                    // MARK: - Summary Cards
+                    // Show student summary if student exists
                     if let student = repository.findStudent(byId: "S001") {
+                        // Summary cards
                         HStack(spacing: 15) {
                             cuteCard(title: "Income", amount: student.totalIncome(), color: .green, icon: "arrow.up.circle.fill")
                             cuteCard(title: "Expenses", amount: student.totalExpenses(), color: .red, icon: "arrow.down.circle.fill")
@@ -38,7 +50,7 @@ struct ContentView: View {
                         .padding(.top)
                         .padding(.horizontal)
 
-                        // MARK: - Input Section
+                        // Inputs for new transactions
                         VStack(spacing: 15) {
                             TextField("Amount", text: $amountText)
                                 .keyboardType(.decimalPad)
@@ -54,6 +66,7 @@ struct ContentView: View {
                                 .font(.system(size: 18, weight: .medium, design: .rounded))
 
                             HStack(spacing: 15) {
+                                // Add income
                                 Button(action: {
                                     if let amount = Double(amountText) {
                                         service.addIncome(studentId: "S001", amount: amount, category: categoryText)
@@ -70,6 +83,7 @@ struct ContentView: View {
                                         .font(.system(size: 18, weight: .bold, design: .rounded))
                                 }
 
+                                // Add expense
                                 Button(action: {
                                     if let amount = Double(amountText) {
                                         service.addExpense(studentId: "S001", amount: amount, category: categoryText)
@@ -90,7 +104,7 @@ struct ContentView: View {
                         .padding(.horizontal)
                         .padding(.top)
 
-                        // MARK: - Transaction List
+                        // Transactions list
                         VStack(alignment: .leading, spacing: 15) {
                             Text("Transactions")
                                 .font(.system(size: 22, weight: .bold, design: .rounded))
@@ -125,8 +139,7 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Cute Summary Card
-    @ViewBuilder
+    // Function to create cute summary cards
     private func cuteCard(title: String, amount: Double, color: Color, icon: String) -> some View {
         VStack(spacing: 8) {
             Image(systemName: icon)
