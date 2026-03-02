@@ -134,10 +134,9 @@ Actual: ~19 hours
 | Write detailed user stories | Harneet | Documentation | 2 |
 | Implement domain models | Harneet | Core development | 3 |
 | Implement stub repository / database | Harneet | Core development | 3 |
-| Add unit tests | Harneet | Core development | 3 |
+| Add unit tests | Harneet | Core development | 4 |
 | Refactor project structure | Harneet | Core development | 2 |
-| Initial content view | Harneet | UI development | 1 |
-| Build final content view for ITR1 submission | Gurshaan | UI development | 2 |
+| Build final content view | Gurshaan | UI development | 2 |
 | Work on UI layout & architecture wiki | Harneet | Documentation / UI | 1 |
 | Implement FinancialService logic | Gurshaan | Core development | 3 |
 | Implement recurring transactions | Gurshaan | Core development | 3 |
