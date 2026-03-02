@@ -111,12 +111,12 @@ Estimated: 5 hours
 Actual: ~6 hours  
 
 Gurshaan  
-Estimated: 7 hours  
-Actual: ~8 hours  
+Estimated: 10 hours  
+Actual: ~15 hours  
 
 Harneet  
-Estimated: 10 hours  
-Actual: ~12 hours  
+Estimated: 13 hours  
+Actual: ~19 hours  
 
 (Time increased mainly due to debugging and UI integration.)
 
@@ -127,7 +127,7 @@ Actual: ~12 hours
 | Task | Assigned To | Notes / Status | Hours Spent |
 |------|------------|----------------|-------------|
 | Set up team communication | Gurshaan | Planning / coordination | 1 |
-| Decide app scope & architecture | Gurshaan | Planning / coordination | 2 |
+| Decide app scope & architecture | Gurshaan | Planning / coordination | 1 |
 | Create vision description & target user work | Gurshaan | Documentation | 2 |
 | Create initial SwiftUI project | Harneet | Project setup | 2 |
 | Set up repository & default test targets | Harneet | Project setup | 2 |
@@ -136,11 +136,12 @@ Actual: ~12 hours
 | Implement stub repository / database | Harneet | Core development | 3 |
 | Add unit tests | Harneet | Core development | 3 |
 | Refactor project structure | Harneet | Core development | 2 |
-| Build initial & final content views | Harneet | UI development | 2 |
+| Initial content view | Harneet | UI development | 1 |
+| Build final content view for ITR1 submission | Gurshaan | UI development | 2 |
 | Work on UI layout & architecture wiki | Harneet | Documentation / UI | 1 |
 | Implement FinancialService logic | Gurshaan | Core development | 3 |
 | Implement recurring transactions | Gurshaan | Core development | 3 |
-| Plan UI/UX layouts | Gurshaan | Design / planning | 2 |
+| Plan UI/UX layouts | Gurshaan | Design / planning | 1 |
 | Assist with cleanup and fixes | Gurshaan | Integration / maintenance | 2 |
 | Create architecture sketch | Mehrshad | Design / planning | 2 |
 | Assist with development integration | Mehrshad | Integration / support | 4 |
