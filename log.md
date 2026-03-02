@@ -122,6 +122,30 @@ Actual: ~12 hours
 
 ---
 
+## Developer Tasks — Iteration 1
+
+| Task | Assigned To | Notes / Status | Hours Spent |
+|------|------------|----------------|-------------|
+| Set up team communication | Gurshaan | Planning / coordination | 1 |
+| Decide app scope & architecture | Gurshaan | Planning / coordination | 2 |
+| Create vision description & target user work | Gurshaan | Documentation | 2 |
+| Create initial SwiftUI project | Harneet | Project setup | 2 |
+| Set up repository & default test targets | Harneet | Project setup | 2 |
+| Write detailed user stories | Harneet | Documentation | 2 |
+| Implement domain models | Harneet | Core development | 3 |
+| Implement stub repository / database | Harneet | Core development | 3 |
+| Add unit tests | Harneet | Core development | 3 |
+| Refactor project structure | Harneet | Core development | 2 |
+| Build initial & final content views | Harneet | UI development | 2 |
+| Work on UI layout & architecture wiki | Harneet | Documentation / UI | 1 |
+| Implement FinancialService logic | Gurshaan | Core development | 3 |
+| Implement recurring transactions | Gurshaan | Core development | 3 |
+| Plan UI/UX layouts | Gurshaan | Design / planning | 2 |
+| Assist with cleanup and fixes | Gurshaan | Integration / maintenance | 2 |
+| Create architecture sketch | Mehrshad | Design / planning | 2 |
+| Assist with development integration | Mehrshad | Integration / support | 4 |
+| Create customer meeting summary video | Chilotam | Documentation / planning | 4 |
+
 ## Design Decisions
 
 - Used a stub database instead of a real database as required for Iteration 1.
