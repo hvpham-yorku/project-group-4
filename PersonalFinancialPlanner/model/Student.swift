@@ -2,61 +2,86 @@
 //  Student.swift
 //  PersonalFinancialPlanner
 //
-//  Created by Harneet Arri on 2026-02-26.
+//  Created by Harneet Arri on 2026-02-26.Edited By Mehrshad Zarastounia
 //
+
 import Foundation
 import Combine
 
 // Represents a student in the UniWallet app
-// ObservableObject allows SwiftUI views to automatically update when @Published properties change
-class Student: ObservableObject {
+// ObservableObject allows SwiftUI views to update when data changes
+final class Student: ObservableObject, Codable {
     
     // Unique identifier for the student
     var id: String
     
-    // Student's name
+    // Student name
     var name: String
     
-    // List of all transactions (income or expenses)
-    // Published so UI updates automatically when new transactions are added
-    @Published var transactions: [Transaction] = []
-
-    // Initializer for a student
-    init(id: String, name: String) {
+    // List of all income and expense transactions
+    @Published var transactions: [Transaction]
+    
+    // Initializer
+    init(id: String, name: String, transactions: [Transaction] = []) {
         self.id = id
         self.name = name
+        self.transactions = transactions
     }
-
-    // Add a transaction (income or expense) to the student's transaction list
+    
+    // Adds a new transaction
     func addTransaction(_ transaction: Transaction) {
         transactions.append(transaction)
     }
-
-    // Calculate total income of the student
+    
+    // Calculates total income
     func totalIncome() -> Double {
         transactions
-            .filter { $0.type == "Income" }  // Only include income transactions
-            .reduce(0) { $0 + $1.amount }    // Sum up all income amounts
+            .filter { $0.type == "Income" }
+            .reduce(0) { $0 + $1.amount }
     }
-
-    // Calculate total expenses of the student
+    
+    // Calculates total expenses
     func totalExpenses() -> Double {
         transactions
-            .filter { $0.type == "Expense" }  // Only include expense transactions
-            .reduce(0) { $0 + $1.amount }    // Sum up all expense amounts
+            .filter { $0.type == "Expense" }
+            .reduce(0) { $0 + $1.amount }
     }
-
-    // Calculate balance = income - expenses
+    
+    // Calculates current balance
     func balance() -> Double {
         totalIncome() - totalExpenses()
     }
-
-    // Get total expenses grouped by category
+    
+    // Groups expenses by category
     func expensesByCategory() -> [String: Double] {
         var result: [String: Double] = [:]
-        for t in transactions where t.type == "Expense" {
-            result[t.category, default: 0] += t.amount  // Sum expenses for each category
+        
+        for transaction in transactions where transaction.type == "Expense" {
+            result[transaction.category, default: 0] += transaction.amount
         }
+        
         return result
+    }
+    
+    // MARK: - Codable Support
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case transactions
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        transactions = try container.decode([Transaction].self, forKey: .transactions)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encode(transactions, forKey: .transactions)
     }
 }

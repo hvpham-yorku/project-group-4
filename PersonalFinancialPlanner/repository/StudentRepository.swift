@@ -2,22 +2,20 @@
 //  StudentRepository.swift
 //  PersonalFinancialPlanner
 //
-//  Created by Harneet Arri on 2026-02-26.
+//  Created by Harneet Arri on 2026-02-26. Edited by Mehrshad Zarastounia
 //
+
 import Foundation
 
-// Protocol for the student repository
-// Defines the methods any repository class must implement
-protocol StudentRepository {
+// Protocol that defines the required repository operations
+protocol StudentRepository: AnyObject {
     
-    // Returns a list of all students
+    // Returns all students from the repository
     func getAllStudents() -> [Student]
     
-    // Finds a student by their unique ID
-    // Returns the student if found, otherwise nil
+    // Finds and returns a student by ID
     func findStudent(byId id: String) -> Student?
     
-    // Saves a student to the repository
-    // For a real database, this would persist the data
+    // Saves or updates a student in the repository
     func saveStudent(_ student: Student)
 }

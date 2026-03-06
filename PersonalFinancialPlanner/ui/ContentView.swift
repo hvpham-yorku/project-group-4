@@ -1,123 +1,152 @@
-
 //
 //  ContentView.swift
 //  PersonalFinancialPlanner
 //
 //  Created by Harneet Arri on 2026-02-26.
-// edited by gurshaan gill
+//  Edited by Gurshaan Gill and Mehrshad Zarastounia
+//
 
 import SwiftUI
 
-// MARK: - Recurrence Enum
-// Enum to define how often a transaction repeats
+// Defines how often a transaction repeats
 enum Recurrence: String, CaseIterable, Identifiable {
-    case none, weekly, biweekly, monthly
+    case none
+    case weekly
+    case biweekly
+    case monthly
     
-    // Conformance to Identifiable protocol
-    var id: String { self.rawValue }
+    var id: String { rawValue }
 }
 
-// MARK: - Main Content View
-struct ContentView: View {
-    // StateObject manages the lifecycle of the repository for this view
-    @StateObject private var repository = StudentRepositoryStub()
+// Main content view
+struct ContentView<RepositoryType: StudentRepository & ObservableObject>: View {
     
-    // Service handles business logic, like adding income/expense
-    private var service: FinancialService
+    // Repository injected from the app entry point
+    @ObservedObject var repository: RepositoryType
     
-    // Input fields for adding a transaction
-    @State private var amountText = ""          // Text input for amount
-    @State private var categoryText = ""        // Text input for category/title
-    @State private var recurrenceSelection: Recurrence = .none  // Picker selection
+    // Business logic service
+    private let service: FinancialService
     
-    // Custom initializer to inject repository into service
-    init() {
-        let repo = StudentRepositoryStub()
-        self._repository = StateObject(wrappedValue: repo)
-        self.service = FinancialService(repository: repo)
+    // Input fields
+    @State private var amountText = ""
+    @State private var categoryText = ""
+    @State private var recurrenceSelection: Recurrence = .none
+    
+    // Inject repository and create the service from it
+    init(repository: RepositoryType) {
+        self.repository = repository
+        self.service = FinancialService(repository: repository)
     }
-
-    // MARK: - Body
+    
     var body: some View {
-        TabView {  // Tab bar navigation
+        TabView {
             mainHomeView
-                .tabItem { Label("Home", systemImage: "house.fill") }
-
+                .tabItem {
+                    Label("Home", systemImage: "house.fill")
+                }
+            
             addTransactionView
-                .tabItem { Label("Add", systemImage: "plus.circle.fill") }
-
+                .tabItem {
+                    Label("Add", systemImage: "plus.circle.fill")
+                }
+            
             budgetView
-                .tabItem { Label("Budget", systemImage: "chart.bar.fill") }
+                .tabItem {
+                    Label("Budget", systemImage: "chart.bar.fill")
+                }
         }
     }
-
+    
     // MARK: - Home View
     private var mainHomeView: some View {
         ZStack {
-            Color.blue.opacity(0.55).ignoresSafeArea()  // Background color
-            ScrollView {  // Scrollable content
+            Color.blue.opacity(0.55)
+                .ignoresSafeArea()
+            
+            ScrollView {
                 VStack(spacing: 25) {
-                    Text("UniWallet")  // App title
+                    Text("UniWallet")
                         .font(.system(size: 36, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                         .padding(.top)
-
-                    // Display student financial data if available
+                    
                     if let student = repository.findStudent(byId: "S001") {
                         HStack(spacing: 15) {
-                            // Cards showing Income, Expenses, Balance
-                            cuteCard(title: "Income", amount: student.totalIncome(), color: .green, icon: "arrow.up.circle.fill")
-                            cuteCard(title: "Expenses", amount: student.totalExpenses(), color: .red, icon: "arrow.down.circle.fill")
-                            cuteCard(title: "Balance", amount: student.balance(), color: .blue, icon: "banknote.fill")
+                            cuteCard(
+                                title: "Income",
+                                amount: student.totalIncome(),
+                                color: .green,
+                                icon: "arrow.up.circle.fill"
+                            )
+                            
+                            cuteCard(
+                                title: "Expenses",
+                                amount: student.totalExpenses(),
+                                color: .red,
+                                icon: "arrow.down.circle.fill"
+                            )
+                            
+                            cuteCard(
+                                title: "Balance",
+                                amount: student.balance(),
+                                color: .blue,
+                                icon: "banknote.fill"
+                            )
                         }
                         .padding(.top)
                         .padding(.horizontal)
-
-                        // List of all transactions
+                        
                         transactionListView(student: student)
+                    } else {
+                        Text("No student data found")
+                            .foregroundColor(.white)
+                            .font(.headline)
                     }
+                    
                     Spacer()
                 }
                 .padding(.bottom)
             }
         }
     }
-
+    
     // MARK: - Add Transaction View
     private var addTransactionView: some View {
         ZStack {
-            Color.gray.opacity(0.2).ignoresSafeArea() // Background color
+            Color.gray.opacity(0.2)
+                .ignoresSafeArea()
+            
             VStack(spacing: 20) {
-                // Amount input field
                 TextField("Amount", text: $amountText)
                     .keyboardType(.decimalPad)
                     .padding()
                     .background(Color.white.opacity(0.8))
                     .cornerRadius(20)
-
-                // Category / Title input field
+                
                 TextField("Category / Title", text: $categoryText)
                     .padding()
                     .background(Color.white.opacity(0.8))
                     .cornerRadius(20)
-
-                // Recurrence picker
+                
                 Picker("Repeat", selection: $recurrenceSelection) {
-                    ForEach(Recurrence.allCases) { rec in
-                        Text(rec.rawValue.capitalized).tag(rec)
+                    ForEach(Recurrence.allCases) { recurrence in
+                        Text(recurrence.rawValue.capitalized).tag(recurrence)
                     }
                 }
-                .pickerStyle(SegmentedPickerStyle())
-
-                // Buttons for adding income or expense
+                .pickerStyle(.segmented)
+                
                 HStack(spacing: 15) {
-                    // Add Income
-                    Button(action: {
-                        if let amount = Double(amountText) {
-                            service.addIncome(studentId: "S001", amount: amount, category: categoryText, recurrence: recurrenceSelection)
-                            clearInputs()  // Reset fields after adding
+                    Button {
+                        if let amount = Double(amountText), !categoryText.trimmingCharacters(in: .whitespaces).isEmpty {
+                            service.addIncome(
+                                studentId: "S001",
+                                amount: amount,
+                                category: categoryText,
+                                recurrence: recurrenceSelection
+                            )
+                            clearInputs()
                         }
-                    }) {
+                    } label: {
                         Label("Income", systemImage: "plus.circle.fill")
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -125,14 +154,18 @@ struct ContentView: View {
                             .foregroundColor(.white)
                             .cornerRadius(25)
                     }
-
-                    // Add Expense
-                    Button(action: {
-                        if let amount = Double(amountText) {
-                            service.addExpense(studentId: "S001", amount: amount, category: categoryText, recurrence: recurrenceSelection)
-                            clearInputs()  // Reset fields after adding
+                    
+                    Button {
+                        if let amount = Double(amountText), !categoryText.trimmingCharacters(in: .whitespaces).isEmpty {
+                            service.addExpense(
+                                studentId: "S001",
+                                amount: amount,
+                                category: categoryText,
+                                recurrence: recurrenceSelection
+                            )
+                            clearInputs()
                         }
-                    }) {
+                    } label: {
                         Label("Expense", systemImage: "minus.circle.fill")
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -145,31 +178,33 @@ struct ContentView: View {
             .padding()
         }
     }
-
-    // MARK: - Budget / Projection View
+    
+    // MARK: - Budget View
     private var budgetView: some View {
         ZStack {
-            Color.orange.opacity(0.2).ignoresSafeArea() // Background color
+            Color.orange.opacity(0.2)
+                .ignoresSafeArea()
+            
             VStack(spacing: 20) {
-                // Calculate monthly totals if student exists
                 if let student = repository.findStudent(byId: "S001") {
                     let income = student.totalIncomeThisMonth()
                     let expenses = student.totalExpensesThisMonth()
                     let net = income - expenses
                     let projectedBalance = student.balance() + net
-
+                    
                     Text("This Month")
                         .font(.title)
                         .bold()
-
+                    
                     Text("Income: $\(income, specifier: "%.2f")")
                     Text("Expenses: $\(expenses, specifier: "%.2f")")
+                    
                     Text("Net: $\(net, specifier: "%.2f")")
                         .foregroundColor(net >= 0 ? .green : .red)
                         .bold()
-
+                    
                     Divider().padding()
-
+                    
                     Text("Projected Next Month Balance: $\(projectedBalance, specifier: "%.2f")")
                         .foregroundColor(projectedBalance >= 0 ? .green : .red)
                         .bold()
@@ -180,27 +215,33 @@ struct ContentView: View {
             .padding()
         }
     }
-
-    // MARK: - Transactions List View
+    
+    // MARK: - Transactions List
     private func transactionListView(student: Student) -> some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Transactions")
                 .font(.system(size: 22, weight: .bold, design: .rounded))
                 .foregroundColor(.white)
                 .padding(.top, 20)
-
-            // Loop through transactions and display each
-            ForEach(student.transactions.indices, id: \.self) { i in
-                let t = student.transactions[i]
+            
+            ForEach(student.transactions.indices, id: \.self) { index in
+                let transaction = student.transactions[index]
+                
                 HStack {
-                    Text(t.category)
+                    Text(transaction.category)
                         .font(.system(size: 18, weight: .medium, design: .rounded))
                         .foregroundColor(.black)
+                    
                     Spacer()
-                    Text(t.type == "Income" ? "+$\(t.amount, specifier: "%.2f")" : "-$\(t.amount, specifier: "%.2f")")
-                        .foregroundColor(t.type == "Income" ? .green : .red)
-                        .bold()
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                    
+                    Text(
+                        transaction.type == "Income"
+                        ? "+$\(transaction.amount, specifier: "%.2f")"
+                        : "-$\(transaction.amount, specifier: "%.2f")"
+                    )
+                    .foregroundColor(transaction.type == "Income" ? .green : .red)
+                    .bold()
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
                 }
                 .padding()
                 .background(Color.white.opacity(0.9))
@@ -210,17 +251,18 @@ struct ContentView: View {
         }
         .padding(.horizontal)
     }
-
-    // MARK: - Helpers
-    // Creates a small card for displaying income, expenses, or balance
+    
+    // MARK: - Helper Card
     private func cuteCard(title: String, amount: Double, color: Color, icon: String) -> some View {
         VStack(spacing: 8) {
             Image(systemName: icon)
                 .font(.title2)
                 .foregroundColor(color)
+            
             Text(title)
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundColor(.gray)
+            
             Text("$\(amount, specifier: "%.2f")")
                 .font(.system(size: 18, weight: .bold, design: .rounded))
         }
@@ -229,8 +271,8 @@ struct ContentView: View {
         .cornerRadius(25)
         .shadow(color: .gray.opacity(0.3), radius: 4, x: 0, y: 3)
     }
-
-    // Clears input fields after adding a transaction
+    
+    // Clears form input fields
     private func clearInputs() {
         amountText = ""
         categoryText = ""
@@ -238,25 +280,26 @@ struct ContentView: View {
     }
 }
 
-// MARK: - Extensions for monthly totals
+// MARK: - Student Extensions
 extension Student {
-    // Calculates total income for current month
+    
+    // Returns total income for the current month
     func totalIncomeThisMonth() -> Double {
         let calendar = Calendar.current
         let now = Date()
-        return transactions.filter {
-            $0.type == "Income" && calendar.isDate($0.date, equalTo: now, toGranularity: .month)
-        }.reduce(0) { $0 + $1.amount }
+        
+        return transactions
+            .filter { $0.type == "Income" && calendar.isDate($0.date, equalTo: now, toGranularity: .month) }
+            .reduce(0) { $0 + $1.amount }
     }
-
-    // Calculates total expenses for current month
+    
+    // Returns total expenses for the current month
     func totalExpensesThisMonth() -> Double {
         let calendar = Calendar.current
         let now = Date()
-        return transactions.filter {
-            $0.type == "Expense" && calendar.isDate($0.date, equalTo: now, toGranularity: .month)
-        }.reduce(0) { $0 + $1.amount }
+        
+        return transactions
+            .filter { $0.type == "Expense" && calendar.isDate($0.date, equalTo: now, toGranularity: .month) }
+            .reduce(0) { $0 + $1.amount }
     }
 }
-
-
