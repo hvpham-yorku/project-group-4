@@ -38,4 +38,37 @@ final class StudentTests: XCTestCase {
         XCTAssertEqual(expenses["Food"], 70)
         XCTAssertEqual(expenses["Transport"], 30)
     }
+    func testExpensesByCategoryReturnsEmptyDictionaryWhenNoExpenses() {
+        let student = Student(id: "S001", name: "Alice")
+        
+        let expenses = student.expensesByCategory()
+        
+        XCTAssertTrue(expenses.isEmpty)
+    }
+
+    func testBalanceIsZeroWhenNoTransactionsExist() {
+        let student = Student(id: "S001", name: "Alice")
+        
+        XCTAssertEqual(student.totalIncome(), 0)
+        XCTAssertEqual(student.totalExpenses(), 0)
+        XCTAssertEqual(student.balance(), 0)
+    }
+
+    func testTotalIncomeIgnoresExpenseTransactions() {
+        let student = Student(id: "S001", name: "Alice")
+        
+        student.addTransaction(Transaction(id: "T1", amount: 100, date: Date(), type: "Income", category: "Allowance"))
+        student.addTransaction(Transaction(id: "T2", amount: 40, date: Date(), type: "Expense", category: "Food"))
+        
+        XCTAssertEqual(student.totalIncome(), 100)
+    }
+
+    func testTotalExpensesIgnoresIncomeTransactions() {
+        let student = Student(id: "S001", name: "Alice")
+        
+        student.addTransaction(Transaction(id: "T1", amount: 100, date: Date(), type: "Income", category: "Allowance"))
+        student.addTransaction(Transaction(id: "T2", amount: 40, date: Date(), type: "Expense", category: "Food"))
+        
+        XCTAssertEqual(student.totalExpenses(), 40)
+    }
 }

@@ -76,4 +76,36 @@ final class FinancialServiceTests: XCTestCase {
         XCTAssertEqual(student.totalExpenses(), 350)
         XCTAssertEqual(student.balance(), 650)
     }
+    func testBalanceCalculation() {
+
+        // Given
+        let studentId = "S001"
+        service.addIncome(studentId: studentId, amount: 1000, category: "Salary")
+        service.addExpense(studentId: studentId, amount: 400, category: "Food")
+
+        // When
+        guard let student = repository.findStudent(byId: studentId) else {
+            XCTFail("Student not found")
+            return
+        }
+
+        // Then
+        XCTAssertEqual(student.balance(), 600)
+    }
+    func testTotalExpensesCalculation() {
+
+        // Given
+        let studentId = "S001"
+        service.addExpense(studentId: studentId, amount: 100, category: "Food")
+        service.addExpense(studentId: studentId, amount: 200, category: "Transport")
+
+        // When
+        guard let student = repository.findStudent(byId: studentId) else {
+            XCTFail("Student not found")
+            return
+        }
+
+        // Then
+        XCTAssertEqual(student.totalExpenses(), 300)
+    }
 }
