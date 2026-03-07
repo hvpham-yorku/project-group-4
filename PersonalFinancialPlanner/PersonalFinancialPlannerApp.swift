@@ -3,20 +3,21 @@
 //  PersonalFinancialPlanner
 //
 //  Created by Harneet Arri on 2026-02-26.
+//  Edited by Mehrshad Zarastounia on 2026-03-05.
 //
+
 import SwiftUI
 
-// Entry point for the UniWallet app
-// This is where the app starts running
 @main
 struct PersonalFinancialPlannerApp: App {
-
-    // The main scene of the app
-    // WindowGroup is the container for all views in SwiftUI
+    
+    // Switch between repositories by changing only this line
+    private let repository = StudentRepositoryReal()
+    // private let repository = StudentRepositoryReal()
+    
     var body: some Scene {
         WindowGroup {
-            // Show the ContentView when the app launches
-            ContentView()
+            ContentView(repository: repository)
         }
     }
 }

@@ -2,43 +2,50 @@
 //  StudentRepositoryStub.swift
 //  PersonalFinancialPlanner
 //
-//  Created by Harneet Arri on 2026-02-26.
+//  Created by Harneet Arri on 2026-02-26.Edited by Mehrshad Zarastounia
 //
+
 import Foundation
 import Combine
 
-// Stub repository for testing and development
-// Conforms to ObservableObject so SwiftUI views can observe changes
-// Also conforms to StudentRepository protocol
-class StudentRepositoryStub: ObservableObject, StudentRepository {
+// Stub repository used for testing and development
+// Data is stored only in memory
+final class StudentRepositoryStub: ObservableObject, StudentRepository {
     
-    // Published array of students, so UI updates automatically when it changes
-    @Published var students: [Student] = []
-
-    // Initializer creates some sample students
+    // Published so SwiftUI refreshes when the array changes
+    @Published private var students: [Student] = []
+    
     init() {
-        // Sample student 1
-        let alice = Student(id: "S001", name: "Alice")
-        students.append(alice)
-
-        // Sample student 2
-        let bob = Student(id: "S002", name: "Bob")
-        students.append(bob)
+        seedDefaultData()
     }
-
-    // Return all students in the repository
+    
+    // Creates default sample data for the stub repository
+    private func seedDefaultData() {
+        let alice = Student(id: "S001", name: "Alice")
+        let bob = Student(id: "S002", name: "Bob")
+        
+        students = [alice, bob]
+    }
+    
+    // Returns all students
     func getAllStudents() -> [Student] {
         students
     }
-
-    // Find a student by their ID
+    
+    // Returns a specific student by ID
     func findStudent(byId id: String) -> Student? {
         students.first { $0.id == id }
     }
-
-    // Save a student to the repository
-    // Stub: no real database, so this does nothing
+    
+    // Updates an existing student or inserts a new one
     func saveStudent(_ student: Student) {
-        // Intentionally left blank for stub
+        if let index = students.firstIndex(where: { $0.id == student.id }) {
+            students[index] = student
+        } else {
+            students.append(student)
+        }
+        
+        // Force SwiftUI refresh for repository observers
+        objectWillChange.send()
     }
 }

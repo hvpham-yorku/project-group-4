@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A8619542F5A8F49000308A4 /* StudentRepositoryReal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A8619532F5A8F49000308A4 /* StudentRepositoryReal.swift */; };
 		5AC2E0C02F50FF68008BE998 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AC2E0B72F50FF68008BE998 /* Account.swift */; };
 		5AC2E0C12F50FF68008BE998 /* Budget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AC2E0B92F50FF68008BE998 /* Budget.swift */; };
 		5AC2E0C22F50FF68008BE998 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AC2E0BA2F50FF68008BE998 /* ContentView.swift */; };
@@ -40,6 +41,7 @@
 		5A1AA5732F50DF5C009C379A /* PersonalFinancialPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PersonalFinancialPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A1AA5802F50DF60009C379A /* PersonalFinancialPlannerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PersonalFinancialPlannerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A1AA58A2F50DF60009C379A /* PersonalFinancialPlannerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PersonalFinancialPlannerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5A8619532F5A8F49000308A4 /* StudentRepositoryReal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentRepositoryReal.swift; sourceTree = "<group>"; };
 		5AC2E0B72F50FF68008BE998 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		5AC2E0B82F50FF68008BE998 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5AC2E0B92F50FF68008BE998 /* Budget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Budget.swift; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 		5AC2E0C92F50FFC0008BE998 /* repository */ = {
 			isa = PBXGroup;
 			children = (
+				5A8619532F5A8F49000308A4 /* StudentRepositoryReal.swift */,
 				5AC2E0CE2F510071008BE998 /* StudentRepository.swift */,
 				5AC2E0BD2F50FF68008BE998 /* StudentRepositoryStub.swift */,
 			);
@@ -306,6 +309,7 @@
 				5AC2E0CF2F510073008BE998 /* StudentRepository.swift in Sources */,
 				5AC2E0CD2F510060008BE998 /* FinancialService.swift in Sources */,
 				5AC2E0C22F50FF68008BE998 /* ContentView.swift in Sources */,
+				5A8619542F5A8F49000308A4 /* StudentRepositoryReal.swift in Sources */,
 				5AC2E0C32F50FF68008BE998 /* PersonalFinancialPlannerApp.swift in Sources */,
 				5AC2E0C42F50FF68008BE998 /* Student.swift in Sources */,
 				5AC2E0C52F50FF68008BE998 /* StudentRepositoryStub.swift in Sources */,
