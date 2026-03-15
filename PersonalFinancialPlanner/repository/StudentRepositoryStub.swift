@@ -4,40 +4,82 @@
 //
 //  Created by Harneet Arri on 2026-02-26.Edited by Mehrshad Zarastounia
 //
-
 import Foundation
 import Combine
 
-// Stub repository used for testing and development
-// Data is stored only in memory
 final class StudentRepositoryStub: ObservableObject, StudentRepository {
     
-    // Published so SwiftUI refreshes when the array changes
     @Published private var students: [Student] = []
     
     init() {
         seedDefaultData()
     }
     
-    // Creates default sample data for the stub repository
     private func seedDefaultData() {
-        let alice = Student(id: "S001", name: "Alice")
-        let bob = Student(id: "S002", name: "Bob")
+        let calendar = Calendar.current
+        let now = Date()
+        
+        let semesterStart = calendar.date(byAdding: .day, value: -14, to: now) ?? now
+        let semesterEnd = calendar.date(byAdding: .day, value: 90, to: now) ?? now
+        let tuitionDue = calendar.date(byAdding: .day, value: 10, to: now) ?? now
+        let osapDate = calendar.date(byAdding: .day, value: 18, to: now) ?? now
+        let nextPay = calendar.date(byAdding: .day, value: 7, to: now) ?? now
+        let rentDate = calendar.date(byAdding: .day, value: 15, to: now) ?? now
+        
+        let plan = SemesterPlan(
+            semesterName: "Fall Semester",
+            startDate: semesterStart,
+            endDate: semesterEnd,
+            tuitionDueDate: tuitionDue,
+            tuitionAmount: 4200,
+            osapExpectedDate: osapDate,
+            osapAmount: 2800,
+            monthlyRent: 1500,
+            mealPlanBalance: 450,
+            weeklyTTC: 37,
+            weeklyGOTransit: 28,
+            nextPaycheckDate: nextPay,
+            nextPaycheckAmount: 1560,
+            commuteType: .commuter,
+            upcomingPayments: [
+                UpcomingPayment(title: "Tuition due", amount: 4200, dueDate: tuitionDue, isIncoming: false),
+                UpcomingPayment(title: "OSAP expected deposit", amount: 2800, dueDate: osapDate, isIncoming: true),
+                UpcomingPayment(title: "Rent", amount: 1500, dueDate: rentDate, isIncoming: false)
+            ]
+        )
+        
+        let alice = Student(
+            id: "S001",
+            name: "Alice",
+            transactions: [
+                Transaction(id: UUID().uuidString, amount: 3200, date: calendar.date(byAdding: .day, value: -12, to: now) ?? now, type: "Income", category: "OSAP"),
+                Transaction(id: UUID().uuidString, amount: 900, date: calendar.date(byAdding: .day, value: -9, to: now) ?? now, type: "Income", category: "Part-Time Job"),
+                Transaction(id: UUID().uuidString, amount: 1500, date: calendar.date(byAdding: .day, value: -8, to: now) ?? now, type: "Expense", category: "Rent"),
+                Transaction(id: UUID().uuidString, amount: 180, date: calendar.date(byAdding: .day, value: -6, to: now) ?? now, type: "Expense", category: "Groceries"),
+                Transaction(id: UUID().uuidString, amount: 65, date: calendar.date(byAdding: .day, value: -5, to: now) ?? now, type: "Expense", category: "TTC"),
+                Transaction(id: UUID().uuidString, amount: 120, date: calendar.date(byAdding: .day, value: -2, to: now) ?? now, type: "Expense", category: "Food")
+            ],
+            semesterPlan: plan
+        )
+        
+        let bob = Student(
+            id: "S002",
+            name: "Bob",
+            transactions: [],
+            semesterPlan: nil
+        )
         
         students = [alice, bob]
     }
     
-    // Returns all students
     func getAllStudents() -> [Student] {
         students
     }
     
-    // Returns a specific student by ID
     func findStudent(byId id: String) -> Student? {
         students.first { $0.id == id }
     }
     
-    // Updates an existing student or inserts a new one
     func saveStudent(_ student: Student) {
         if let index = students.firstIndex(where: { $0.id == student.id }) {
             students[index] = student
@@ -45,7 +87,6 @@ final class StudentRepositoryStub: ObservableObject, StudentRepository {
             students.append(student)
         }
         
-        // Force SwiftUI refresh for repository observers
         objectWillChange.send()
     }
 }
