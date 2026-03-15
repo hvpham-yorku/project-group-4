@@ -5,10 +5,8 @@
 //  Created by Harneet Arri on 2026-02-26.
 //  Edited by Gurshaan Gill and Mehrshad Zarastounia
 //
-
 import SwiftUI
 
-// Defines how often a transaction repeats
 enum Recurrence: String, CaseIterable, Identifiable {
     case none
     case weekly
@@ -18,21 +16,16 @@ enum Recurrence: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
-// Main content view
 struct ContentView<RepositoryType: StudentRepository & ObservableObject>: View {
     
-    // Repository injected from the app entry point
     @ObservedObject var repository: RepositoryType
-    
-    // Business logic service
     private let service: FinancialService
     
-    // Input fields
     @State private var amountText = ""
     @State private var categoryText = ""
     @State private var recurrenceSelection: Recurrence = .none
+    @State private var whatIfAmount = "120"
     
-    // Inject repository and create the service from it
     init(repository: RepositoryType) {
         self.repository = repository
         self.service = FinancialService(repository: repository)
@@ -40,7 +33,7 @@ struct ContentView<RepositoryType: StudentRepository & ObservableObject>: View {
     
     var body: some View {
         TabView {
-            mainHomeView
+            dashboardView
                 .tabItem {
                     Label("Home", systemImage: "house.fill")
                 }
@@ -50,83 +43,135 @@ struct ContentView<RepositoryType: StudentRepository & ObservableObject>: View {
                     Label("Add", systemImage: "plus.circle.fill")
                 }
             
-            budgetView
+            trendsView
                 .tabItem {
-                    Label("Budget", systemImage: "chart.bar.fill")
+                    Label("Insights", systemImage: "chart.bar.fill")
                 }
         }
     }
     
-    // MARK: - Home View
-    private var mainHomeView: some View {
-        ZStack {
-            Color.blue.opacity(0.55)
-                .ignoresSafeArea()
-            
-            ScrollView {
-                VStack(spacing: 25) {
-                    Text("UniWallet")
-                        .font(.system(size: 36, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
-                        .padding(.top)
-                    
-                    if let student = repository.findStudent(byId: "S001") {
-                        HStack(spacing: 15) {
-                            cuteCard(
-                                title: "Income",
-                                amount: student.totalIncome(),
-                                color: .green,
-                                icon: "arrow.up.circle.fill"
-                            )
-                            
-                            cuteCard(
-                                title: "Expenses",
-                                amount: student.totalExpenses(),
-                                color: .red,
-                                icon: "arrow.down.circle.fill"
-                            )
-                            
-                            cuteCard(
-                                title: "Balance",
-                                amount: student.balance(),
-                                color: .blue,
-                                icon: "banknote.fill"
-                            )
-                        }
-                        .padding(.top)
-                        .padding(.horizontal)
-                        
-                        transactionListView(student: student)
-                    } else {
-                        Text("No student data found")
+    private var dashboardView: some View {
+        NavigationView {
+            ZStack {
+                Color.black.ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 18) {
+                        Text("UniWallet")
+                            .font(.system(size: 34, weight: .bold, design: .rounded))
                             .foregroundColor(.white)
-                            .font(.headline)
+                        
+                        Text("A predictive, semester-based financial planner for York students.")
+                            .font(.subheadline)
+                            .foregroundColor(.white.opacity(0.75))
+                        
+                        if let student = repository.findStudent(byId: "S001") {
+                            summaryCards(student: student)
+                            
+                            if let runway = service.semesterRunway(for: "S001") {
+                                dashboardCard(title: "Semester Runway", icon: "calendar.badge.clock") {
+                                    Text("You have $\(runway.remainingBalance, specifier: "%.0f") remaining for the semester.")
+                                    Text("Safe weekly spending: $\(runway.safeWeeklySpending, specifier: "%.0f")/week")
+                                    Text("Weeks remaining: \(runway.weeksRemaining)")
+                                }
+                            }
+                            
+                            dashboardCard(title: "Upcoming Payments / Deadlines", icon: "exclamationmark.circle") {
+                                ForEach(service.upcomingPayments(for: "S001")) { payment in
+                                    HStack {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text(payment.title)
+                                                .font(.headline)
+                                            Text(formattedDate(payment.dueDate))
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                        }
+                                        Spacer()
+                                        Text("\(payment.isIncoming ? "+" : "-")$\(payment.amount, specifier: "%.0f")")
+                                            .foregroundColor(payment.isIncoming ? .green : .red)
+                                            .bold()
+                                    }
+                                }
+                            }
+                            
+                            if let commuter = service.commuterCosts(for: "S001") {
+                                dashboardCard(title: "Commuter Costs", icon: "tram.fill") {
+                                    Text("This week: TTC $\(commuter.weeklyTTC, specifier: "%.0f"), GO Transit $\(commuter.weeklyGOTransit, specifier: "%.0f").")
+                                    Text("Transportation makes up \(commuter.transportationBudgetShare, specifier: "%.0f")% of weekly budget.")
+                                }
+                            }
+                            
+                            if let residence = service.residenceMealPlanSummary(for: "S001") {
+                                dashboardCard(title: "Residence / Meal Plan Costs", icon: "fork.knife") {
+                                    Text("Residence fees paid: $\(residence.residencePaid, specifier: "%.0f")")
+                                    Text("Remaining meal plan balance: $\(residence.remainingMealPlan, specifier: "%.0f")")
+                                    Text("Safe weekly food spending: $\(residence.safeWeeklyFoodSpending, specifier: "%.0f")")
+                                }
+                            }
+                            
+                            dashboardCard(title: "What-If Alert", icon: "questionmark.circle.fill") {
+                                if let amount = Double(whatIfAmount),
+                                   let result = service.whatIfExpenseImpact(for: "S001", extraExpense: amount) {
+                                    Text("Buying a $\(amount, specifier: "%.0f") item reduces safe weekly spending to $\(result.newSafeWeeklySpending, specifier: "%.0f").")
+                                    Text("Runway shortens by \(result.runwayDaysReduced) days.")
+                                }
+                                
+                                TextField("What-if amount", text: $whatIfAmount)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                            }
+                            
+                            if let paycheck = service.nextPaycheckSummary(for: "S001") {
+                                dashboardCard(title: "Co-op / Part-Time Income", icon: "dollarsign.circle.fill") {
+                                    Text(paycheck)
+                                }
+                            }
+                            
+                            dashboardCard(title: "Safety Warnings", icon: "exclamationmark.triangle.fill") {
+                                ForEach(service.safetyWarnings(for: "S001")) { alert in
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(alert.title)
+                                            .font(.headline)
+                                            .foregroundColor(color(for: alert.severity))
+                                        Text(alert.message)
+                                    }
+                                    .padding(.bottom, 6)
+                                }
+                            }
+                            
+                            dashboardCard(title: "York-Specific Tips", icon: "lightbulb.fill") {
+                                ForEach(service.yorkSpecificTips()) { tip in
+                                    Text("• \(tip.message)")
+                                }
+                            }
+                            
+                            transactionListView(student: student)
+                        } else {
+                            Text("No student data found")
+                                .foregroundColor(.white)
+                        }
                     }
-                    
-                    Spacer()
+                    .padding()
                 }
-                .padding(.bottom)
             }
         }
     }
     
-    // MARK: - Add Transaction View
     private var addTransactionView: some View {
         ZStack {
-            Color.gray.opacity(0.2)
-                .ignoresSafeArea()
+            Color.gray.opacity(0.15).ignoresSafeArea()
             
             VStack(spacing: 20) {
                 TextField("Amount", text: $amountText)
                     .keyboardType(.decimalPad)
                     .padding()
-                    .background(Color.white.opacity(0.8))
-                    .cornerRadius(20)
+                    .background(Color.white)
+                    .cornerRadius(14)
                 
                 TextField("Category / Title", text: $categoryText)
                     .padding()
-                    .background(Color.white.opacity(0.8))
-                    .cornerRadius(20)
+                    .background(Color.white)
+                    .cornerRadius(14)
                 
                 Picker("Repeat", selection: $recurrenceSelection) {
                     ForEach(Recurrence.allCases) { recurrence in
@@ -135,144 +180,167 @@ struct ContentView<RepositoryType: StudentRepository & ObservableObject>: View {
                 }
                 .pickerStyle(.segmented)
                 
-                HStack(spacing: 15) {
+                HStack(spacing: 14) {
                     Button {
                         if let amount = Double(amountText), !categoryText.trimmingCharacters(in: .whitespaces).isEmpty {
-                            service.addIncome(
-                                studentId: "S001",
-                                amount: amount,
-                                category: categoryText,
-                                recurrence: recurrenceSelection
-                            )
+                            service.addIncome(studentId: "S001", amount: amount, category: categoryText, recurrence: recurrenceSelection)
                             clearInputs()
                         }
                     } label: {
                         Label("Income", systemImage: "plus.circle.fill")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.green.opacity(0.8))
+                            .background(Color.green)
                             .foregroundColor(.white)
-                            .cornerRadius(25)
+                            .cornerRadius(14)
                     }
                     
                     Button {
                         if let amount = Double(amountText), !categoryText.trimmingCharacters(in: .whitespaces).isEmpty {
-                            service.addExpense(
-                                studentId: "S001",
-                                amount: amount,
-                                category: categoryText,
-                                recurrence: recurrenceSelection
-                            )
+                            service.addExpense(studentId: "S001", amount: amount, category: categoryText, recurrence: recurrenceSelection)
                             clearInputs()
                         }
                     } label: {
                         Label("Expense", systemImage: "minus.circle.fill")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.pink.opacity(0.8))
+                            .background(Color.red)
                             .foregroundColor(.white)
-                            .cornerRadius(25)
+                            .cornerRadius(14)
                     }
                 }
+                
+                Spacer()
             }
             .padding()
         }
     }
     
-    // MARK: - Budget View
-    private var budgetView: some View {
+    private var trendsView: some View {
         ZStack {
-            Color.orange.opacity(0.2)
-                .ignoresSafeArea()
+            Color.blue.opacity(0.08).ignoresSafeArea()
             
-            VStack(spacing: 20) {
-                if let student = repository.findStudent(byId: "S001") {
-                    let income = student.totalIncomeThisMonth()
-                    let expenses = student.totalExpensesThisMonth()
-                    let net = income - expenses
-                    let projectedBalance = student.balance() + net
+            VStack(alignment: .leading, spacing: 20) {
+                Text("Spending Trends")
+                    .font(.largeTitle.bold())
+                
+                if let trend = service.spendingTrend(for: "S001") {
+                    dashboardCardLight(title: "Monthly Summary", icon: "chart.bar.fill") {
+                        Text("Income this month: $\(trend.monthIncome, specifier: "%.0f")")
+                        Text("Expenses this month: $\(trend.monthExpenses, specifier: "%.0f")")
+                        Text("Top category: \(trend.topCategory) ($\(trend.topCategoryAmount, specifier: "%.0f"))")
+                    }
                     
-                    Text("This Month")
-                        .font(.title)
-                        .bold()
-                    
-                    Text("Income: $\(income, specifier: "%.2f")")
-                    Text("Expenses: $\(expenses, specifier: "%.2f")")
-                    
-                    Text("Net: $\(net, specifier: "%.2f")")
-                        .foregroundColor(net >= 0 ? .green : .red)
-                        .bold()
-                    
-                    Divider().padding()
-                    
-                    Text("Projected Next Month Balance: $\(projectedBalance, specifier: "%.2f")")
-                        .foregroundColor(projectedBalance >= 0 ? .green : .red)
-                        .bold()
+                    dashboardCardLight(title: "Expense Mix", icon: "chart.pie.fill") {
+                        Text("Fixed expenses: \(trend.fixedExpensePercentage, specifier: "%.0f")%")
+                        Text("Variable expenses: \(trend.variableExpensePercentage, specifier: "%.0f")%")
+                    }
                 } else {
-                    Text("No student data found")
+                    Text("No insight data available.")
                 }
+                
+                Spacer()
             }
             .padding()
         }
     }
     
-    // MARK: - Transactions List
-    private func transactionListView(student: Student) -> some View {
-        VStack(alignment: .leading, spacing: 15) {
-            Text("Transactions")
-                .font(.system(size: 22, weight: .bold, design: .rounded))
+    private func summaryCards(student: Student) -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                compactCard(title: "Income", value: student.totalIncome(), color: .green)
+                compactCard(title: "Expenses", value: student.totalExpenses(), color: .red)
+                compactCard(title: "Balance", value: student.balance(), color: .blue)
+            }
+        }
+    }
+    
+    private func compactCard(title: String, value: Double, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .foregroundColor(.white.opacity(0.7))
+            Text("$\(value, specifier: "%.0f")")
+                .font(.title2.bold())
                 .foregroundColor(.white)
-                .padding(.top, 20)
+        }
+        .padding()
+        .frame(width: 150, alignment: .leading)
+        .background(color.opacity(0.85))
+        .cornerRadius(18)
+    }
+    
+    private func dashboardCard<Content: View>(title: String, icon: String, @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label(title, systemImage: icon)
+                .font(.headline)
+                .foregroundColor(.white)
+            content()
+                .foregroundColor(.white.opacity(0.9))
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.white.opacity(0.09))
+        .cornerRadius(18)
+    }
+    
+    private func dashboardCardLight<Content: View>(title: String, icon: String, @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label(title, systemImage: icon)
+                .font(.headline)
+            content()
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.white)
+        .cornerRadius(18)
+        .shadow(radius: 4)
+    }
+    
+    private func transactionListView(student: Student) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Transactions")
+                .font(.title2.bold())
+                .foregroundColor(.white)
             
             ForEach(student.transactions.indices, id: \.self) { index in
                 let transaction = student.transactions[index]
                 
                 HStack {
-                    Text(transaction.category)
-                        .font(.system(size: 18, weight: .medium, design: .rounded))
-                        .foregroundColor(.black)
-                    
+                    VStack(alignment: .leading) {
+                        Text(transaction.category)
+                            .foregroundColor(.white)
+                        Text(formattedDate(transaction.date))
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.6))
+                    }
                     Spacer()
-                    
-                    Text(
-                        transaction.type == "Income"
-                        ? "+$\(transaction.amount, specifier: "%.2f")"
-                        : "-$\(transaction.amount, specifier: "%.2f")"
-                    )
-                    .foregroundColor(transaction.type == "Income" ? .green : .red)
-                    .bold()
-                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                    Text(transaction.type == "Income"
+                         ? "+$\(transaction.amount, specifier: "%.0f")"
+                         : "-$\(transaction.amount, specifier: "%.0f")")
+                        .foregroundColor(transaction.type == "Income" ? .green : .red)
+                        .bold()
                 }
                 .padding()
-                .background(Color.white.opacity(0.9))
-                .cornerRadius(25)
-                .shadow(color: .gray.opacity(0.2), radius: 3, x: 0, y: 2)
+                .background(Color.white.opacity(0.08))
+                .cornerRadius(14)
             }
         }
-        .padding(.horizontal)
     }
     
-    // MARK: - Helper Card
-    private func cuteCard(title: String, amount: Double, color: Color, icon: String) -> some View {
-        VStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundColor(color)
-            
-            Text(title)
-                .font(.system(size: 14, weight: .bold, design: .rounded))
-                .foregroundColor(.gray)
-            
-            Text("$\(amount, specifier: "%.2f")")
-                .font(.system(size: 18, weight: .bold, design: .rounded))
+    private func color(for severity: AlertSeverity) -> Color {
+        switch severity {
+        case .info: return .blue
+        case .warning: return .yellow
+        case .critical: return .red
         }
-        .frame(width: 100, height: 120)
-        .background(Color.white.opacity(0.8))
-        .cornerRadius(25)
-        .shadow(color: .gray.opacity(0.3), radius: 4, x: 0, y: 3)
     }
     
-    // Clears form input fields
+    private func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
+    }
+    
     private func clearInputs() {
         amountText = ""
         categoryText = ""
@@ -280,10 +348,8 @@ struct ContentView<RepositoryType: StudentRepository & ObservableObject>: View {
     }
 }
 
-// MARK: - Student Extensions
 extension Student {
     
-    // Returns total income for the current month
     func totalIncomeThisMonth() -> Double {
         let calendar = Calendar.current
         let now = Date()
@@ -293,7 +359,6 @@ extension Student {
             .reduce(0) { $0 + $1.amount }
     }
     
-    // Returns total expenses for the current month
     func totalExpensesThisMonth() -> Double {
         let calendar = Calendar.current
         let now = Date()
