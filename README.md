@@ -35,3 +35,8 @@ This application is intended for university and college students who want a simp
 
 ## Iteration Status
 Iteration 1 focuses on implementing the core foundation of the application including domain models, stub database, service logic, and basic user interface.
+## Customer Feedback Video
+
+This video shows feedback from the customer after using the app, including what worked well, what was confusing, and what could be improved.
+
+Link: https://youtu.be/w1GtWA_lkOI
