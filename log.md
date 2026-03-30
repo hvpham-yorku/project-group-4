@@ -237,3 +237,48 @@ Main Points:
 ---
 
 # Iteration 3 Log
+Project: Personal Financial Planner for Students  
+Course: EECS2311  
+Group: Group 4
+
+---
+
+## Overview
+
+Iteration 3 focused on finalization, security, and advanced student specific modeling. We implemented a multi user login system, created a predictive dashboard for future planning, and refactored the codebase to remove hardcoded data, ensuring the app is ready for a final release.
+
+---
+
+## Team Meeting
+
+### Zoom Meeting — March 11
+
+Attendance: Gurshaan, Harneet, Chilotam, Mehrshad
+
+Discussion: Following the second customer interview, the team prioritized adding a login system and semester based planning.
+
+Main Points:
+- Transitioning from a single user app to a secure multi user login system.
+- Developing the SemesterPlan model to include tuition and OSAP variables.
+
+### Zoom Meeting - March 18
+
+Attendance: Gurshaan, Harneet, Chilotam, Mehrshad
+
+Discussion: Technical focus on the predictive dashboard and refactoring the UI layer.
+
+Main Points:
+- Integrating financial insights into a Predictive Dashboard.
+- Refactoring ContentView to remove hardcoded student IDs for better scalability.
+- Grouping expense categories for a clearer financial overview.
+
+### Zoom Meeting - March 25
+
+Attendance: Gurshaan, Harneet, Chilotam, Mehrshad
+
+Discussion: Final dry run of the live demo and addressing outstanding bugs before the March 30 deadline.
+
+Main Points:
+- Resolving the issue where StudentRepositoryStub was returning nil.
+- Finalizing the app icon and aesthetic UI improvements.
+- Ensuring the demo presentation stays within the 13-minute time limit.
