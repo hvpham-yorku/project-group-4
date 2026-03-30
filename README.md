@@ -100,9 +100,6 @@ University and college students who want an intelligent, semester-based personal
 - ProfileView  
 - DashboardView  
 
-### Other Components
-- AuthManager  
-
 ---
 
 ## Documentation Links
