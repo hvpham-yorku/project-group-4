@@ -23,6 +23,8 @@ struct ContentView<RepositoryType: StudentRepository & ObservableObject>: View {
     @State private var recurrenceSelection: Recurrence = .none
     @State private var whatIfAmount = "120"
 
+    private let currentStudentId = "S001"
+
     init(repository: RepositoryType) {
         self.repository = repository
         self.service = FinancialService(repository: repository)
@@ -53,7 +55,7 @@ struct ContentView<RepositoryType: StudentRepository & ObservableObject>: View {
             Text("UniWallet")
                 .font(.largeTitle.bold())
 
-            if let student = repository.findStudent(byId: "S001") {
+            if let student = repository.findStudent(byId: currentStudentId) {
                 Text("Balance: $\(student.balance(), specifier: "%.2f")")
                     .font(.title2)
 
@@ -90,7 +92,7 @@ struct ContentView<RepositoryType: StudentRepository & ObservableObject>: View {
 
             Button("Add Expense") {
                 if let amount = Double(amountText),
-                   let student = repository.findStudent(byId: "S001") {
+                   let student = repository.findStudent(byId: currentStudentId) {
                     service.addExpense(student: student, amount: amount, category: categoryText)
                     amountText = ""
                     categoryText = ""
@@ -107,7 +109,7 @@ struct ContentView<RepositoryType: StudentRepository & ObservableObject>: View {
             Text("Insights")
                 .font(.largeTitle.bold())
 
-            if let student = repository.findStudent(byId: "S001") {
+            if let student = repository.findStudent(byId: currentStudentId) {
                 Text("Transactions: \(student.transactions.count)")
                 Text("What-if amount: $\(whatIfAmount)")
             }
