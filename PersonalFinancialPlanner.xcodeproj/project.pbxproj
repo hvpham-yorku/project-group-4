@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A4D8E672F7A241E0095B709 /* SemesterSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4D8E662F7A24150095B709 /* SemesterSetupView.swift */; };
 		5A8619542F5A8F49000308A4 /* StudentRepositoryReal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A8619532F5A8F49000308A4 /* StudentRepositoryReal.swift */; };
 		5A99AA792F66F06F00D7D22F /* SemesterPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A99AA782F66F06F00D7D22F /* SemesterPlan.swift */; };
 		5AC2E0C02F50FF68008BE998 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AC2E0B72F50FF68008BE998 /* Account.swift */; };
@@ -44,6 +45,7 @@
 		5A1AA5732F50DF5C009C379A /* PersonalFinancialPlanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PersonalFinancialPlanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A1AA5802F50DF60009C379A /* PersonalFinancialPlannerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PersonalFinancialPlannerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A1AA58A2F50DF60009C379A /* PersonalFinancialPlannerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PersonalFinancialPlannerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5A4D8E662F7A24150095B709 /* SemesterSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemesterSetupView.swift; sourceTree = "<group>"; };
 		5A8619532F5A8F49000308A4 /* StudentRepositoryReal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentRepositoryReal.swift; sourceTree = "<group>"; };
 		5A99AA782F66F06F00D7D22F /* SemesterPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemesterPlan.swift; sourceTree = "<group>"; };
 		5AC2E0B72F50FF68008BE998 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 		5AC2E0CB2F50FFEC008BE998 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				5A4D8E662F7A24150095B709 /* SemesterSetupView.swift */,
 				5ACB88542F79FB580098DC9C /* LoginView.swift */,
 				5ACB875E2F79CE3E0098DC9C /* ProfileView.swift */,
 				5AC2E0BA2F50FF68008BE998 /* ContentView.swift */,
@@ -321,6 +324,7 @@
 				5AC2E0C22F50FF68008BE998 /* ContentView.swift in Sources */,
 				5A8619542F5A8F49000308A4 /* StudentRepositoryReal.swift in Sources */,
 				5AC2E0C32F50FF68008BE998 /* PersonalFinancialPlannerApp.swift in Sources */,
+				5A4D8E672F7A241E0095B709 /* SemesterSetupView.swift in Sources */,
 				5AC2E0C42F50FF68008BE998 /* Student.swift in Sources */,
 				5AC2E0C52F50FF68008BE998 /* StudentRepositoryStub.swift in Sources */,
 				5ACB88552F79FB880098DC9C /* LoginView.swift in Sources */,
