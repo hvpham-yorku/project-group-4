@@ -103,10 +103,9 @@ University and college students who want an intelligent, semester-based personal
 ---
 
 ## Documentation Links
-- Planning Document: Docs/Planning Document ITR3.pdf
-- Refactoring Document: Docs/Refactoring Document.pdf
-- Architecture Diagram: Docs/ArchitecturalDiagram.png
-
+Planning Document: [Planning Document ITR3](Docs/Planning%20Document%20ITR3.pdf)  
+Refactoring Document: [Refactoring Document](Docs/Refactoring%20Document.pdf)  
+Architecture Diagram: [Architecture Diagram](Docs/ArchitecturalDiagram.png)
 ---
 
 ## Release Status
