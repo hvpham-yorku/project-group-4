@@ -195,3 +195,45 @@ How we handled them:
 By the end of Iteration 1, the project had a working structure with domain models, service logic, stub data storage, unit tests, and an initial user interface.
 
 The application builds and runs successfully, and the team now has a solid base to continue development in the next iteration.
+
+---
+
+# Iteration 2 Log
+Project: Personal Financial Planner for Students  
+Course: EECS2311  
+Group: Group 4
+
+---
+
+## Overview
+
+Iteration 2 transitioned the project from a basic interface to a funcational tool with data persistence and user alerts. The foucs was to make sure that student data is saved locally and providing automated notifications to help users stay within their finanical means. 
+
+---
+
+## Team Meeting
+
+### Zoom Meeting — March 3
+
+Attendance: Gurshaan, Harneet, Chilotam, Mehrshad
+
+Discussion: The team reviewed ITR1 and discussed the technical requiements for local storage
+
+Main Points:
+- Choosing the internal database structure for local persistence
+- Designing the UI for the new saving goals feature
+- Identifying the logic needed for weekly spending alerts
+
+### Zoom Meeting - March 5
+
+Attendance: Gurshaan, Harneet, Chilotam, Mehrshad
+
+Discussion: A mid week sync to make sure that the automated alerts were working correctly based on the budget limits.
+
+Main Points:
+- Testing the budget over limit
+- Making usre that saving progress updates in real time as transactions are added
+
+---
+
+# Iteration 3 Log
