@@ -1,15 +1,9 @@
-//
-//  StudentRepositoryStub.swift
-//  PersonalFinancialPlanner
-//
-//  Created by Harneet Arri on 2026-02-26.Edited by Mehrshad Zarastounia
-//
 import Foundation
 import Combine
 
 final class StudentRepositoryStub: ObservableObject, StudentRepository {
     
-    @Published private var students: [Student] = []
+    @Published var students: [Student] = []
     
     init() {
         seedDefaultData()
@@ -19,38 +13,11 @@ final class StudentRepositoryStub: ObservableObject, StudentRepository {
         let calendar = Calendar.current
         let now = Date()
         
-        let semesterStart = calendar.date(byAdding: .day, value: -14, to: now) ?? now
-        let semesterEnd = calendar.date(byAdding: .day, value: 90, to: now) ?? now
-        let tuitionDue = calendar.date(byAdding: .day, value: 10, to: now) ?? now
-        let osapDate = calendar.date(byAdding: .day, value: 18, to: now) ?? now
-        let nextPay = calendar.date(byAdding: .day, value: 7, to: now) ?? now
-        let rentDate = calendar.date(byAdding: .day, value: 15, to: now) ?? now
-        
-        let plan = SemesterPlan(
-            semesterName: "Fall Semester",
-            startDate: semesterStart,
-            endDate: semesterEnd,
-            tuitionDueDate: tuitionDue,
-            tuitionAmount: 4200,
-            osapExpectedDate: osapDate,
-            osapAmount: 2800,
-            monthlyRent: 1500,
-            mealPlanBalance: 450,
-            weeklyTTC: 37,
-            weeklyGOTransit: 28,
-            nextPaycheckDate: nextPay,
-            nextPaycheckAmount: 1560,
-            commuteType: .commuter,
-            upcomingPayments: [
-                UpcomingPayment(title: "Tuition due", amount: 4200, dueDate: tuitionDue, isIncoming: false),
-                UpcomingPayment(title: "OSAP expected deposit", amount: 2800, dueDate: osapDate, isIncoming: true),
-                UpcomingPayment(title: "Rent", amount: 1500, dueDate: rentDate, isIncoming: false)
-            ]
-        )
-        
         let alice = Student(
             id: "S001",
             name: "Alice",
+            email: "alice@yorku.ca",
+            password: "Alice123",
             transactions: [
                 Transaction(id: UUID().uuidString, amount: 3200, date: calendar.date(byAdding: .day, value: -12, to: now) ?? now, type: "Income", category: "OSAP"),
                 Transaction(id: UUID().uuidString, amount: 900, date: calendar.date(byAdding: .day, value: -9, to: now) ?? now, type: "Income", category: "Part-Time Job"),
@@ -58,26 +25,37 @@ final class StudentRepositoryStub: ObservableObject, StudentRepository {
                 Transaction(id: UUID().uuidString, amount: 180, date: calendar.date(byAdding: .day, value: -6, to: now) ?? now, type: "Expense", category: "Groceries"),
                 Transaction(id: UUID().uuidString, amount: 65, date: calendar.date(byAdding: .day, value: -5, to: now) ?? now, type: "Expense", category: "TTC"),
                 Transaction(id: UUID().uuidString, amount: 120, date: calendar.date(byAdding: .day, value: -2, to: now) ?? now, type: "Expense", category: "Food")
-            ],
-            semesterPlan: plan
+            ]
         )
         
         let bob = Student(
             id: "S002",
             name: "Bob",
-            transactions: [],
-            semesterPlan: nil
+            email: "bob@yorku.ca",
+            password: "Bob123",
+            transactions: []
         )
         
-        students = [alice, bob]
+        let tester = Student(
+            id: "T001",
+            name: "Tester",
+            email: "tester@yorku.ca",
+            password: "Test1234",
+            transactions: []
+        )
+        
+        students = [alice, bob, tester]
     }
     
-    func getAllStudents() -> [Student] {
-        students
-    }
+    // MARK: - Protocol methods
+    func getAllStudents() -> [Student] { students }
     
-    func findStudent(byId id: String) -> Student? {
-        students.first { $0.id == id }
+    func findStudent(byId id: String) -> Student? { students.first { $0.id == id } }
+    
+    func findStudent(byEmail email: String) -> Student? { students.first { $0.email.lowercased() == email.lowercased() } }
+    
+    func login(email: String, password: String) -> Student? {
+        students.first { $0.email.lowercased() == email.lowercased() && $0.password == password }
     }
     
     func saveStudent(_ student: Student) {
@@ -86,7 +64,11 @@ final class StudentRepositoryStub: ObservableObject, StudentRepository {
         } else {
             students.append(student)
         }
-        
+        objectWillChange.send()
+    }
+    
+    func deleteStudent(_ student: Student) {
+        students.removeAll { $0.id == student.id }
         objectWillChange.send()
     }
 }
